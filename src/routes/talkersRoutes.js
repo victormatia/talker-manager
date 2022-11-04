@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 const route = express.Router();
 
@@ -25,5 +26,7 @@ route.get('/', async (req, res) => {
 route.get('/:id', verifyId, async (req, res) => {
   res.status(200).json(req.talker);
 });
+
+
 
 module.exports = route;
