@@ -4,9 +4,28 @@ const path = require('path');
 
 const route = express.Router();
 
+const verifyId = async (req, res, next) => {
+  const { id } = req.params;
+  const talkers = JSON.parse(await fs.readFile(path.resolve(__dirname, '../talker.json')));
+  const talker = talkers.find((e) => e.id === Number(id));
+  console.log(id);
+  console.log(talker);
+
+  if (!talker) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+
+  req.talker = talker;
+  next();
+};
+
 route.get('/', async (req, res) => {
   const talkers = JSON.parse(await fs.readFile(path.resolve(__dirname, '../talker.json')));
   res.status(200).send(talkers);
+});
+
+route.get('/:id', verifyId, async (req, res) => {
+  res.status(200).send(req.talker);
 });
 
 module.exports = route;
