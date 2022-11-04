@@ -21,4 +21,12 @@ route.post('/login', verify.Email, verify.Pass, (req, res) => {
   res.status(200).json({ token: createToken() });
 });
 
+route.post(
+  '/talker',
+  verify.Token,
+  verify.Name,
+  verify.Age,
+  (req, res) => res.send('Deu bom'),
+);
+
 module.exports = route;
