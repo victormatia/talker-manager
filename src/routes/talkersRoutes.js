@@ -18,10 +18,32 @@ const verifyId = async (req, res, next) => {
   next();
 };
 
-// const verifyEmail = (req, res) => {
-//   const
-//   if
-// };
+const verifyEmail = (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ message: 'O campo "email" é obrigatório' });
+
+  const emailRegex = /\S+@\S+\.\S+/;
+  const isValidEmail = emailRegex.test(email);
+
+  if (!isValidEmail) {
+    return res.status(400).json({ message: 'O "email" deve ter o formato "email@email.com"' });
+  }
+  next();
+};
+
+const verifyPass = (req, res, next) => {
+  const { password } = req.body;
+
+  if (!password) return res.status(400).json({ message: 'O campo "password" é obrigatório' });
+
+  const minimalLenth = 6;
+
+  if (password.length < minimalLenth) {
+    return res.status(400).json({ message: 'O "password" deve ter pelo menos 6 caracteres' });
+  }
+  next();
+};
 
 const createToken = () => crypto.randomBytes(8).toString('hex');
 
@@ -34,7 +56,7 @@ route.get('/talker/:id', verifyId, async (req, res) => {
   res.status(200).json(req.talker);
 });
 
-route.post('/login', (req, res) => {
+route.post('/login', verifyEmail, verifyPass, (req, res) => {
   res.status(200).json({ token: createToken() });
 });
 
