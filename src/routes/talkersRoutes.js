@@ -64,9 +64,7 @@ route.put(
     filteredById[0].age = age;
     filteredById[0].talk = talk;
 
-    const newArr = [...talkers];
-
-      await fs.writeFile(path.resolve(__dirname, '../talker.json'), JSON.stringify(newArr));
+    await fs.writeFile(path.resolve(__dirname, '../talker.json'), JSON.stringify(talkers));
 
     res.status(200).json(filteredById[0]);
   },
