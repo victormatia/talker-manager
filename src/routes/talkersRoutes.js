@@ -37,11 +37,38 @@ route.post(
 
     const id = talkers.length + 1;
     const newTalker = { id, name, age, talk };
-    const newobj = [...talkers, newTalker];
+    const newArr = [...talkers, newTalker];
 
-    await fs.writeFile(path.resolve(__dirname, '../talker.json'), JSON.stringify(newobj));
+    await fs.writeFile(path.resolve(__dirname, '../talker.json'), JSON.stringify(newArr));
 
     res.status(201).json(newTalker);
+  },
+);
+
+route.put(
+  '/talker/:id',
+  verify.Token,
+  verify.Id,
+  verify.Name,
+  verify.Age,
+  verify.Talk,
+  verify.Rate,
+  verify.Watch,
+  async (req, res) => {
+    const { id } = req.params;
+    const { name, age, talk } = req.body;
+    const talkers = JSON.parse(await fs.readFile(path.resolve(__dirname, RELATIVE_PATH)));
+    const filteredById = talkers.filter((talker) => talker.id === Number(id));
+
+    filteredById[0].name = name;
+    filteredById[0].age = age;
+    filteredById[0].talk = talk;
+
+    const newArr = [...talkers];
+
+      await fs.writeFile(path.resolve(__dirname, '../talker.json'), JSON.stringify(newArr));
+
+    res.status(200).json(filteredById[0]);
   },
 );
 
