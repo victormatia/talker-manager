@@ -26,7 +26,21 @@ route.post(
   verify.Token,
   verify.Name,
   verify.Age,
-  (req, res) => res.send('Deu bom'),
+  verify.Talk,
+  verify.Rate,
+  verify.Watch,
+  async (req, res) => {
+    const { name, age, talk } = req.body;
+    const talkers = JSON.parse(await fs.readFile(path.resolve(__dirname, '../talker.json')));
+
+    const id = talkers.length + 1;
+    const newTalker = { id, name, age, talk };
+    const newobj = [...talkers, newTalker];
+
+    await fs.writeFile(path.resolve(__dirname, '../talker.json'), JSON.stringify(newobj));
+
+    res.status(201).json(newTalker);
+  },
 );
 
 module.exports = route;

@@ -83,6 +83,40 @@ const Age = (req, res, next) => {
   next();
 };
 
+const Rate = ({ body: { talk } }, res, next) => {
+  if (!('rate' in talk)) {
+    return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
+  }
+  if ((talk.rate < 0 || talk.rate > 5) || !Number.isInteger(talk.rate)) {
+    return res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
+  }
+
+  next();
+};
+
+const Watch = ({ body: { talk } }, res, next) => {
+  if (!('watchedAt' in talk)) {
+    return res.status(400).json({ message: 'O campo "watchedAt" é obrigatório' });
+  }
+
+  const regexDate = /^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$/;
+  const isValideDate = regexDate.test(talk.watchedAt);
+
+  if (!isValideDate) {
+    return res.status(400).json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
+  }
+
+  next();
+};
+
+const Talk = (req, res, next) => {
+  if (!('talk' in req.body)) {
+    return res.status(400).json({ message: 'O campo "talk" é obrigatório' });
+  }
+
+  next();
+};
+
 module.exports = {
   Email,
   Id,
@@ -90,4 +124,7 @@ module.exports = {
   Token,
   Name,
   Age,
+  Talk,
+  Rate,
+  Watch,
 };
