@@ -42,12 +42,7 @@ const Pass = (req, res, next) => {
 };
 
 const Token = (req, res, next) => {
-  const { q } = req.query;
   const { authorization } = req.headers;
-
-  if (!q) {
-    return next();
-  }
 
   if (!authorization) {
     return res.status(401).json({ message: 'Token não encontrado' });

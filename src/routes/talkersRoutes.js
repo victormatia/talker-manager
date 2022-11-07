@@ -10,17 +10,19 @@ const route = express.Router();
 
 const createToken = () => crypto.randomBytes(8).toString('hex');
 
-route.get('/talker', verify.Token, async (req, res) => {
+route.get('/talker', async (req, res) => {
+  const talkers = JSON.parse(await fs.readFile(path.resolve(__dirname, RELATIVE_PATH)));
+
+  res.status(200).json(talkers);
+});
+
+route.get('/talker/search', verify.Token, async (req, res) => {
   const { q } = req.query;
   const talkers = JSON.parse(await fs.readFile(path.resolve(__dirname, RELATIVE_PATH)));
 
-  if (q) {
-    const talkersearchted = talkers.filter((talker) => talker.name.includes(q));
-
-    return res.status(200).json(talkersearchted);
-  }
-
-  res.status(200).json(talkers);
+  const talkerSearchted = talkers.filter((talker) => talker.name.includes(q));
+    
+  return res.status(200).json(talkerSearchted);
 });
 
 route.get('/talker/:id', verify.Id, async (req, res) => {
